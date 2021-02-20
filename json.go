@@ -1,24 +1,24 @@
 package main
 
 import (
-	"net/http"
 	"encoding/json"
-	"time"
-	"log"
 	"io/ioutil"
+	"log"
+	"net/http"
+	"time"
 )
 
-type ReceivedRequest struct{
-	Date string               `json:Date`
-	Method string             `json:Method`
-	Url string                `json:URL`
-	Proto string              `json:proto`
+type ReceivedRequest struct {
+	Date    string            `json:Date`
+	Method  string            `json:Method`
+	Url     string            `json:URL`
+	Proto   string            `json:proto`
 	Headers map[string]string `json:Headers`
-	Params map[string]string  `json:Params`
-	Body string               `json:Body`
+	Params  map[string]string `json:Params`
+	Body    string            `json:Body`
 }
 
-func JSONEncode(r *http.Request) (string){
+func JSONEncode(r *http.Request) string {
 	var rr ReceivedRequest
 
 	// Get simple values
@@ -29,27 +29,27 @@ func JSONEncode(r *http.Request) (string){
 
 	// Get headers
 	rr.Headers = make(map[string]string)
-	for key,value := range r.Header{
+	for key, value := range r.Header {
 		v := ""
-		for _,i := range value{
+		for _, i := range value {
 			v = v + i
 		}
-		rr.Headers[key]=v
+		rr.Headers[key] = v
 	}
 
 	// Get Params
 	rr.Params = make(map[string]string)
-	for key,value := range r.URL.Query(){
+	for key, value := range r.URL.Query() {
 		v := ""
-		for _,i := range value{
-			v = v+i
+		for _, i := range value {
+			v = v + i
 		}
-		rr.Params[key]=v
+		rr.Params[key] = v
 	}
 
 	// Get body
 	bytes, err := ioutil.ReadAll(r.Body)
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 	rr.Body = string(bytes)
@@ -60,6 +60,5 @@ func JSONEncode(r *http.Request) (string){
 		return "{\"Error\":\"AH !\"}"
 	}
 
-	return string(jsonrr) 
+	return string(jsonrr)
 }
-	
